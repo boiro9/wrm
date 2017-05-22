@@ -1,0 +1,159 @@
+---
+title: "Wildfire: Aircraft Selection and Allocation"
+output: html_document
+params:
+  info: NA
+  results: NA
+  input: NA
+---
+
+<br>
+<br>
+
+---
+
+## 1. Data
+
+---
+
+<br>
+
+### 1.1. Aircraft information
+```{r, results='asis', echo=FALSE}
+air.data = list(I=params$info$I, 
+                A=params$info$A, 
+                CFP=params$info$CFP, 
+                CRP=params$info$CRP,
+                CTFP=params$info$CTFP,
+                C=params$info$C,
+                P=params$info$P,
+                BPR=params$info$BPR
+                )
+cat(c("I | C | P | A | CFP | CRP | CTFP | BPR \n"))
+cat(rep("---", length(air.data)), sep=" | ")
+cat("\n")
+for(a in seq(length(air.data$I))){
+  cat(c(air.data$I[a], " | ", air.data$C[a], " | ", 
+        air.data$P[a], " | ", air.data$A[a], " | ", 
+        air.data$CFP[a], " | ", air.data$CRP[a], " | ", 
+        air.data$CTFP[a], " | ", air.data$BPR[a], "\n"))
+}
+```
+
+<br>
+
+### 1.2. Wildfire information
+```{r, results='asis', echo=FALSE}
+fire.data = list(Period=params$info$Periods, 
+                 SP=params$info$SP, 
+                 NVC=params$info$NVC, 
+                 EF=params$info$EF,
+                 nMin=params$info$nMin
+                 )
+cat(c("Period | SP | NVC | EF | nMin \n"))
+cat(rep("---", length(fire.data)), sep=" | ")
+cat("\n")
+for(p in seq(length(fire.data$Period))){
+  cat(c(fire.data$Period[p], " | ", fire.data$SP[p], " | ", 
+        fire.data$NVC[p], " | ", fire.data$EF[p], " | ", 
+        fire.data$nMin[p], "\n"))
+}
+```
+
+<br>
+
+### 1.3. Law information
+```{r, results='asis', echo=FALSE}
+law.data = list(DFP=params$info$DFP, 
+                 FP=params$info$FP, 
+                 RP=params$info$RP, 
+                 FBRP=params$info$FBRP,
+                 nMax=params$info$nMax
+                 )
+cat(c("DFP | FP | RP | FBRP | nMax \n"))
+cat(rep("---", length(law.data)), sep=" | ")
+cat("\n")
+cat(c(law.data$DFP, " | ", law.data$FP, " | ", 
+        law.data$RP, " | ", law.data$FBRP, " | ", 
+        law.data$nMax, "\n"))
+```
+
+<br>
+<br>
+
+---
+
+## 2. Solver Information
+
+---
+
+<br>
+
+```{r, results='asis', echo=FALSE}
+if(params$input$method=="heuristic"){
+  cat("Method | Solver | M | IterMax \n")
+cat("--- | --- | --- | --- \n")
+cat(params$input$method, " | ", 
+    params$input$solver, " | ", 
+    params$input$M, " | ",
+    params$input$IterMax, "\n")
+}else{
+  cat("Method | Solver | M \n")
+cat("--- | --- | --- \n")
+cat(params$input$method, " | ", 
+    params$input$solver, " | ", 
+    params$input$M, "\n")
+}
+
+```
+
+<br>
+<br>
+
+---
+
+## 3. Results
+
+---
+
+<br>
+
+### 3.1. General Information
+```{r, results='asis', echo=FALSE}
+cat("Cost | Contention Period | Solve Time", "--- | --- | ---", sep="\n")
+cat(params$results$cost, " | ", params$results$contper, " | ", params$results$time, "\n")
+```
+
+<br>
+<br>
+
+### 3.2. Solution Information
+
+<br>
+
+#### 3.2.1. Scheduling
+```{r, echo=FALSE}
+asa::plotscheduling(asa::data.scheduling(params$results))
+```
+
+<br>
+
+#### 3.2.2. Contention
+```{r, echo=FALSE}
+asa::plotcontention(asa::data.contention(params$info, params$results))
+```
+
+<br>
+
+#### 3.2.3. Number of Aircraft
+```{r, echo=FALSE}
+asa::plotnumaircraft(asa::data.num.aircraft(params$results))
+```
+
+<br>
+
+#### 3.2.4. Yield
+```{r, echo=FALSE}
+asa::plotyield(asa::data.yield(params$info, params$results))
+```
+
