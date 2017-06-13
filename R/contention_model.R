@@ -11,6 +11,7 @@
 #' @param M high value for the content_yes_no constraint.
 #' @param M_prime penalty.
 #' @param solver solver name. Options: 'gurobi', 'lpSolve' or 'Rsymphony'.
+#' @param solver_params list of gurobi options. Defaults to list(TimeLimit=600, OutputFlag = 0).
 #'
 #' @return optimal values.
 #'
@@ -19,7 +20,7 @@
 #' @import slam
 #'
 #' @export
-contention_model <- function(W_fix, S_fix, params, M, M_prime, solver="gurobi"){
+contention_model <- function(W_fix, S_fix, params, M, M_prime, solver="gurobi", solver_params=list(TimeLimit=600, OutputFlag=0)){
   #-----------------------------------------------------------------------------
   # Datos
   #-----------------------------------------------------------------------------
@@ -302,7 +303,7 @@ contention_model <- function(W_fix, S_fix, params, M, M_prime, solver="gurobi"){
     heuristic$lb<-numeric(n_var)
     heuristic$modelsense<-"min"
 
-    sol<-gurobi(heuristic, list(OutputFlag = 0))
+    sol<-gurobi(heuristic, solver_params)
     x<-sol$x
     obj_value <- sol$objval
     sol_result<-sol$status

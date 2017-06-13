@@ -4,7 +4,8 @@
 \alias{contention_model}
 \title{Contention model}
 \usage{
-contention_model(W_fix, S_fix, params, M, M_prime, solver = "gurobi")
+contention_model(W_fix, S_fix, params, M, M_prime, solver = "gurobi",
+  solver_params = list(TimeLimit = 600, OutputFlag = 0))
 }
 \arguments{
 \item{W_fix}{Work matrix.}
@@ -18,6 +19,8 @@ contention_model(W_fix, S_fix, params, M, M_prime, solver = "gurobi")
 \item{M_prime}{penalty.}
 
 \item{solver}{solver name. Options: 'gurobi', 'lpSolve' or 'Rsymphony'.}
+
+\item{solver_params}{list of gurobi options. Defaults to list(TimeLimit=600, OutputFlag = 0).}
 }
 \value{
 optimal values.

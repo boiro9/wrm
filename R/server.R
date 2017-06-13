@@ -160,32 +160,24 @@ asa_server <- function(input, output, session) {
       #-------------------------------------------------------------------------
       # Solve model
       #-------------------------------------------------------------------------
-      if(input$method=="exact"){
-        #-----------------------------------------------------------------------
-        # Exact algorithm
-        #-----------------------------------------------------------------------
-        results <- asa::asa(problem.info,
-                      M_prime=input$M,
-                      solver=input$solver)
-      }else if(input$method=="heuristic"){
-        #-----------------------------------------------------------------------
-        # Heuristic algorithm
-        #-----------------------------------------------------------------------
-        results <- asa::asa_h(problem.info,
-                        M_prime=input$M,
-                        niters=input$IterMax,
-                        solver=input$solver)
-      }
-
+      results <- asa::asa(problem.info,
+                    M_prime=input$M,
+                    input$method,
+                    niters=input$IterMax,
+                    solver=input$solver)
+      
       #-------------------------------------------------------------------------
       # Update solve status
       #-------------------------------------------------------------------------
       shinyjs::hide(id = "status_load")
-      if(results$sol_result=="OPTIMAL"){
+      if(results$st_model$sol_result=="OPTIMAL"){
+        results <- results$st_model
         shinyjs::show(id = "status_opt")
         shinyjs::enable("report")
         results$contper <- max(which(results$Y==1))
       }else{
+        results$nd_model$time <- results$st_model$time + results$nd_model$time
+        results <- results$nd_model
         shinyjs::show(id="status_inf")
         shinyjs::enable("report")
         results$contper <- "Unknown"
@@ -198,6 +190,7 @@ asa_server <- function(input, output, session) {
 
       # Get data
       #-------------------------------------------------------------------------
+      
       WRF <- asa::data.scheduling(results)
 
       # Data selection
@@ -219,6 +212,7 @@ asa_server <- function(input, output, session) {
 
       # Data output
       #-------------------------------------------------------------------------
+      
       output$WRF.data <- DT::renderDataTable({
         DT::datatable(data.scheduling.selection(WRF, input))
       })
@@ -236,16 +230,19 @@ asa_server <- function(input, output, session) {
 
       # Get data
       #-------------------------------------------------------------------------
+      
       contention.data <- data.contention(problem.info, results)
 
       # Data output
       #-------------------------------------------------------------------------
+      
       output$contention.data <- DT::renderDataTable({
         DT::datatable(contention.data)
       })
 
       # Graph output
       #-------------------------------------------------------------------------
+      
       output$contention.plot <- renderPlotly({
         asa::plotcontention(contention.data)
       })
@@ -257,16 +254,19 @@ asa_server <- function(input, output, session) {
 
       # Get data
       #-------------------------------------------------------------------------
+      
       num.aircraft.data <- asa::data.num.aircraft(results)
 
       # Data output
       #-------------------------------------------------------------------------
+      
       output$num.aircraft.data <- DT::renderDataTable({
         DT::datatable(num.aircraft.data)
       })
 
       # Graph output
       #-------------------------------------------------------------------------
+      
       output$num.aircraft.plot <- renderPlotly({
         asa::plotnumaircraft(num.aircraft.data)
       })
@@ -278,16 +278,19 @@ asa_server <- function(input, output, session) {
 
       # Get data
       #-------------------------------------------------------------------------
+      
       yield.data <- data.yield(problem.info, results)
 
       # Data output
       #-------------------------------------------------------------------------
+      
       output$yield.data <- DT::renderDataTable({
         DT::datatable(yield.data)
       })
 
       # Graph output
       #-------------------------------------------------------------------------
+      
       output$yield.plot <- renderPlotly({
         asa::plotyield(yield.data)
       })
@@ -296,6 +299,7 @@ asa_server <- function(input, output, session) {
       #=========================================================================
       # Report
       #-------------------------------------------------------------------------
+      
       output$report <- downloadHandler(
         # For PDF output, change this to "report.pdf"
         filename = "report.html",
@@ -327,7 +331,7 @@ asa_server <- function(input, output, session) {
       #=========================================================================
       # OPTIMAL
       #-------------------------------------------------------------------------
-      if(results$sol_result=="OPTIMAL"){
+      if(results$model=="exact"){
         #-----------------------------------------------------------------------
         # Cost
         #-----------------------------------------------------------------------

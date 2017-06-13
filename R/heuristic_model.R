@@ -8,6 +8,8 @@
 #' @param M_prime penalization for the breach of the minimum aircrafts on a wildfire.
 #' @param niters maximum number of iterations.
 #' @param solver solver name, 'gurobi', 'Rsymphony' or 'lpSolve'.
+#' @param solver_params list of gurobi options. Defaults to list(TimeLimit=600, OutputFlag = 0).
+#' @param verbose logging level information. If 0 no information.
 #'
 #' @return information about the selection and allocation of the aircrafts.
 #'
@@ -15,8 +17,8 @@
 #'
 #' @examples
 #' data <- example_data()
-#' asa::asa_h(data, solver="lpSolveAPI")
-asa_h <- function(data, M_prime=1000000, niters=10, solver="gurobi"){
+#' asa::heuristic_model(data, solver="lpSolveAPI")
+heuristic_model <- function(data, M_prime=1000000, niters=10, solver="gurobi", solver_params=list(TimeLimit=600, OutputFlag=0), verbose=0){
   #-----------------------------------------------------------------------------
   # Start time
   #-----------------------------------------------------------------------------
@@ -98,7 +100,7 @@ asa_h <- function(data, M_prime=1000000, niters=10, solver="gurobi"){
   #-----------------------------------------------------------------------------
   # Solve Selection model
   #-----------------------------------------------------------------------------
-  sol1 = contention_model(W_fix, S_fix, params, M, M_prime, solver)
+  sol1 = contention_model(W_fix, S_fix, params, M, M_prime, solver, solver_params)
 
   iter = 0
   if(sol1$sol_result=="OPTIMAL"){
@@ -114,12 +116,14 @@ asa_h <- function(data, M_prime=1000000, niters=10, solver="gurobi"){
     # Bucle until the model changed to feasible
     #-----------------------------------------------------------------------------
     while(feas>0 & iter<=niters & sol_result=="OPTIMAL"){
-      cat("----------------------------------------\n")
-      cat("Iter:", iter,"\n")
-      cat("Selection:", I[I_select], "\n")
-      cat("Contention Period:", m_select, "\n")
-      cat("Feasibility:", feas, "\n")
-      cat("----------------------------------------\n\n")
+      if(verbose>0){
+        cat("----------------------------------------\n")
+        cat("Iter:", iter,"\n")
+        cat("Selection:", I[I_select], "\n")
+        cat("Contention Period:", m_select, "\n")
+        cat("Feasibility:", feas, "\n")
+        cat("----------------------------------------\n\n")
+      }
       iter <- iter+1
 
       #---------------------------------------------------------------------------
@@ -129,7 +133,7 @@ asa_h <- function(data, M_prime=1000000, niters=10, solver="gurobi"){
       S_select[!I_select] <- 0
       S_fix_hist[[iter]] <- S_select
 
-      sol2 = rest_model(I_select, m_select, S_fix_hist, params, M_prime, solver)
+      sol2 = rest_model(I_select, m_select, S_fix_hist, params, M_prime, solver, solver_params)
 
       #-------------------------------------------------------------------------
       # If the solution is OPTIMAL
@@ -156,7 +160,7 @@ asa_h <- function(data, M_prime=1000000, niters=10, solver="gurobi"){
         #-------------------------------------------------------------------------
         # Solve Selection model
         #-------------------------------------------------------------------------
-        sol1 = contention_model(W_fix, S_fix, params, M, M_prime, solver)
+        sol1 = contention_model(W_fix, S_fix, params, M, M_prime, solver, solver_params)
 
         #-------------------------------------------------------------------------
         # If the solution is OPTIMAL
@@ -178,19 +182,21 @@ asa_h <- function(data, M_prime=1000000, niters=10, solver="gurobi"){
     #-----------------------------------------------------------------------------
     if(sol_result=="OPTIMAL"){
       if(feas==0){
-        cat("========================================\n")
-        cat("FEASIBLE SOLUTION\n")
-        cat("----------------------------------------\n")
-        cat("Iter:", iter,"\n")
-        cat("Cost:", sol1$cost,"\n")
-        cat("Selection:", I[I_select], "\n")
-        cat("Contention Period:", m_select, "\n")
-        cat("Feasibility:", feas, "\n")
-        cat("========================================\n")
-
+        if(verbose>0){
+          cat("========================================\n")
+          cat("FEASIBLE SOLUTION\n")
+          cat("----------------------------------------\n")
+          cat("Iter:", iter,"\n")
+          cat("Cost:", sol1$cost,"\n")
+          cat("Selection:", I[I_select], "\n")
+          cat("Contention Period:", m_select, "\n")
+          cat("Feasibility:", feas, "\n")
+          cat("========================================\n")
+        }
         sol<-list(
+          model="heuristic",
           iter=iter,
-          time=Sys.time() - start.time,
+          time=difftime(Sys.time(), start.time, units="secs"),
           feas=feas,
           sol_result=sol_result,
           obj=sol1$obj,
@@ -209,14 +215,29 @@ asa_h <- function(data, M_prime=1000000, niters=10, solver="gurobi"){
         )
 
       }else{
-        sol<-infeasible_solution(params, solver, start.time, n, m, iter)
+        sol<- list(model="heuristic",
+                   sol_result="INFEASIBLE", 
+                   solver_result="MAXITERS",
+                   cost=NA,
+                   time = difftime(Sys.time(), start.time, units="secs")
+                   )
       }
     }else{
-      sol<-infeasible_solution(params, solver, start.time, n, m, iter)
+      sol<- list(model="heuristic",
+                 sol_result="INFEASIBLE", 
+                 solver_result="INFEASIBLE, MAXITERS",
+                 cost=NA,
+                 time = difftime(Sys.time(), start.time, units="secs")
+      )
     }
 
   }else{
-    sol<-infeasible_solution(params, solver, start.time, n, m, iter)
+    sol<- list(model="heuristic",
+               sol_result="INFEASIBLE", 
+               solver_result="INFEASIBLE",
+               cost=NA,
+               time = difftime(Sys.time(), start.time, units="secs")
+    )
   }
   return(sol)
 }

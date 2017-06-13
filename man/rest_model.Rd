@@ -4,7 +4,8 @@
 \alias{rest_model}
 \title{Build and solve the rest model.}
 \usage{
-rest_model(I_select, m_select, S_fix_hist, params, M_prime, solver = "gurobi")
+rest_model(I_select, m_select, S_fix_hist, params, M_prime, solver = "gurobi",
+  solver_params = list(TimeLimit = 600, OutputFlag = 0))
 }
 \arguments{
 \item{I_select}{selected aircraft.}
@@ -18,6 +19,8 @@ rest_model(I_select, m_select, S_fix_hist, params, M_prime, solver = "gurobi")
 \item{M_prime}{penalty for the aircraft number breach.}
 
 \item{solver}{solver name: 'gurobi', 'lpSolve' or 'Rsymphony'.}
+
+\item{solver_params}{list of gurobi options. Defaults to list(TimeLimit=600, OutputFlag = 0).}
 }
 \value{
 list with the optimal value of the variables, objective function, ...

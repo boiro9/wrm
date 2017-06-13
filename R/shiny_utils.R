@@ -109,7 +109,7 @@ get_data <- function(aeronaves, incendio, input){
 data.scheduling <- function(sol){
   WRF<-(sol$Work+2*sol$Rest+3*sol$Fly)
   WRF <- WRF[sol$Selection==1, 1:max(which(WRF!=0,arr.ind = T)[,2])]
-  if(sol$sol_result=="INFEASIBLE"){
+  if(sol$model=="rest_model"){
     WRF <- WRF[,-dim(WRF)[2]]
   }
   return(WRF)
@@ -212,7 +212,7 @@ data.contention <- function(data, sol){
   df.contention <- data.frame(periods=as.numeric(names(contention)),
                               contention = contention)
 
-  if(sol$sol_result=="INFEASIBLE"){
+  if(sol$model=="rest_model"){
     df.contention <- df.contention[-dim(df.contention)[1],]
   }
 
@@ -261,7 +261,7 @@ data.num.aircraft <- function(sol){
   df.n_aero_period <- data.frame(periods=as.numeric(names(n_aero_period)),
                               num = n_aero_period)
 
-  if(sol$sol_result=="INFEASIBLE"){
+  if(sol$model=="rest_model"){
     df.n_aero_period <- df.n_aero_period[-dim(df.n_aero_period)[1],]
   }
   return(df.n_aero_period)
@@ -309,7 +309,7 @@ data.yield <- function(data, sol){
   df.yield <- data.frame(periods=as.numeric(names(yield)),
                               num = yield)
 
-  if(sol$sol_result=="INFEASIBLE"){
+  if(sol$model=="rest_model"){
     df.yield <- df.yield[-dim(df.yield)[1],]
   }
 

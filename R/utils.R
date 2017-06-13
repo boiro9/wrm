@@ -100,8 +100,11 @@ update_nMin <- function(nMin, W_fix, FBRP, m){
     if((m-FBRP+1)<=m){
       W_fix[,(m-FBRP+1):m] <- 0
     }
-    nMin[1:(min(which(col_sums(W_fix)!=0))-1)] <- 0
-
+    num <- which(col_sums(W_fix)!=0)
+    if(length(num)>0){
+      nMin[1:(min(num)-1)] <- 0
+    }
+    
     return(nMin)
   }
 }

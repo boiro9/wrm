@@ -11,7 +11,8 @@
 #' @param params common model params.
 #' @param M_prime penalty for the aircraft number breach.
 #' @param solver solver name: 'gurobi', 'lpSolve' or 'Rsymphony'.
-#'
+#' @param solver_params list of gurobi options. Defaults to list(TimeLimit=600, OutputFlag = 0).
+#' 
 #' @return list with the optimal value of the variables, objective function, ...
 #'
 #' @import lpSolveAPI
@@ -29,7 +30,7 @@
 #' M_prime = 1000000
 #' rest_model(I_select, m_select, S_fix_hist, params, M_prime, solver="lpSolve")
 #'
-rest_model <- function(I_select, m_select, S_fix_hist, params, M_prime, solver="gurobi"){
+rest_model <- function(I_select, m_select, S_fix_hist, params, M_prime, solver="gurobi", solver_params=list(TimeLimit=600, OutputFlag=0)){
   #-----------------------------------------------------------------------------
   # Datos
   #-----------------------------------------------------------------------------
@@ -551,7 +552,7 @@ rest_model <- function(I_select, m_select, S_fix_hist, params, M_prime, solver="
     heuristic$lb<-numeric(n_var)
     heuristic$modelsense<-"max"
 
-    sol<-gurobi(heuristic, list(OutputFlag=0))
+    sol<-gurobi(heuristic, solver_params)
     x<-sol$x
     obj_value <- sol$objval
     sol_result<-sol$status
