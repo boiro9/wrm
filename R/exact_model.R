@@ -30,51 +30,52 @@ exact_model <- function(data, M_prime=0, solver="gurobi", solver_params=list(Tim
   #-----------------------------------------------------------------------------
   # Load data
   #-----------------------------------------------------------------------------
-  I=data$I
-  Periods=data$Periods
-  FP=data$FP
-  RP=data$RP
-  DFP=data$DFP
-  FBRP=data$FBRP
-  A=data$A
-  CFP=data$CFP
-  CRP=data$CRP
-  CTFP=data$CTFP
-  C=data$C
-  P=data$P
-  BPR=data$BPR
-  SP=data$SP
-  NVC=data$NVC
-  EF=data$EF
-  nMax=data$nMax
-  nMin=data$nMin
+  I=data$I               # Set of aircraft to select.
+  Periods=data$Periods   # Set of time Periods.
+  FP=data$FP             # Maximum number of time periods with no rests.
+  RP=data$RP             # Number of time periods of rest.
+  DFP=data$DFP           # Maximum number time periods working.
+  FBRP=data$FBRP         # Number of time periods flying from fire to rest place and vice versa.
+  A=data$A               # Number of time periods to arrive to the wildfire.
+  CFP=data$CFP           # Number of time periods worked currently with no rests.
+  CRP=data$CRP           # Number of time periods rested currently.
+  CTFP=data$CTFP         # Number of time periods worked currently.
+  C=data$C               # Cost per period of aircraft.
+  P=data$P               # Cost of select aircraft.
+  BPR=data$BPR           # Base yield of aircraft.
+  SP=data$SP             # Perimeter of the wildfire in each time period.
+  NVC=data$NVC           # Incremental cost of the wildfire in each time period.
+  EF=data$EF             # Efficience of the aircrafts in each time period.
+  nMax=data$nMax         # Maximum number of aircrafts working in the wildfire in each time period.
+  nMin=data$nMin         # Minimum number of aircrafts working in the wildfire in each time period.
+  
+  
+  #-----------------------------------------------------------------------------
+  # Number of aircraft and periods
+  #-----------------------------------------------------------------------------
+
+  n<-length(I)          # number of aircraft
+  m<-length(Periods)    # number of periods
 
   #-----------------------------------------------------------------------------
-  # Numero aeronaves y periodos
+  # Other information: is computed taken the above information
   #-----------------------------------------------------------------------------
+  PR = BPR%*%t(EF)                              # Aircrafts yields (each aircraft in each period)
+  PER = compute_PER(SP, m)                      # Perimeter increment
 
-  n<-length(I)                                          # numero de recursos
-  m<-length(Periods)                                   # numero de periodos
+  M_prime <- max(100*(sum(C)+sum(NVC)),M_prime) # Penalization term
+  M <- max(SP)+sum(EF%*%t(PR))                  # Contention term
 
-  #-----------------------------------------------------------------------------
-  # Calculos
-  #-----------------------------------------------------------------------------
-  PR = BPR%*%t(EF)
-  PER = compute_PER(SP, m)
-
-  M_prime <- max(100*(sum(C)+sum(NVC)),M_prime)
-  M <- max(SP)+sum(EF%*%t(PR))
-
-  l<-c() #numero de periodos que forman el tiempo de vuelo si sale en otro periodo
+  l<-c()                                        # number of fly periods when the aircraft start to fly to the wildfire
   for(i in 1:n){
     l[i] <- A[i]+floor((A[i]+CFP[i])/FP)*(RP+2*FBRP)+CRP[i]
   }
 
   #-----------------------------------------------------------------------------
-  # Modelo matemático
+  # Mathematical modelling
   #-----------------------------------------------------------------------------
 
-  # Orden de las variables de decision:
+  # Order of variables:
   #   S[i,t] : 0*(n*m)+t+(i-1)*m
   #  FL[i,t] : 1*(n*m)+t+(i-1)*m
   # R[i,t] : 2*(n*m)+t+(i-1)*m
@@ -87,7 +88,7 @@ exact_model <- function(data, M_prime=0, solver="gurobi", solver_params=list(Tim
   #   Y[t-1] : 7*(n*m)+n+m+t
   #   Y[m]   : 7*(n*m)+n+m+m+1
 
-  n_var<-7*(n*m)+n+2*m+1                               # numero de variables
+  n_var<-7*(n*m)+n+2*m+1                                # numero de variables
   n_cons<-(n*m)+(n*m)+1+1+(n*m)+n+n+(n*m)+(n*m)+(n*m)+  #
     (n*m)+(n*m)+(n*m)+m+n+n+n+(n*m)+m+m                 # numero de restricciones
 

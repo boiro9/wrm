@@ -34,7 +34,7 @@ get_model_params <- function(data){
   # Numero aeronaves y periodos
   #-----------------------------------------------------------------------------
   n<-length(I)        # Number of aircrafts
-  m<-length(Periods) # Number of periods
+  m<-length(Periods)  # Number of periods
 
   #-----------------------------------------------------------------------------
   # Compute model params
