@@ -279,8 +279,8 @@ exact_model <- function(data, M_prime=0, solver="gurobi", solver_params=list(Tim
       #   else
       #     sum{t in T} S[i,t]
       #   <=
-      #     if A[i] == 0 then
-      #   m*Z[i]
+      #   if A[i] == 0 then
+      #     m*Z[i]
       #   else
       #     Z[i]
       #-------------------------------------------------------------------------
