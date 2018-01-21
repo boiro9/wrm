@@ -75,7 +75,7 @@ rest_model <- function(I_select, m_select, S_fix_hist, params, M_prime, solver="
   # mu[t]   : 7*(n*m)+t
   # MU[t]   : 7*(n*m)+m+t
 
-  n_var <- 7*(n*m)+2*m                                             # Number of variables
+  n_var <- 7*(n*m)+2*m                                                # Number of variables
   n_cons <- (n*m)+(n*m)+3*n+8*(n*m)+2*n+(n*m)+2*m+length(S_fix_hist)  # Number of constraints
 
   # Type

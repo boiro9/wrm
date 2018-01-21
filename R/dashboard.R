@@ -253,15 +253,7 @@ asa_dashboard <- function(){
               "<script type='text/javascript' async",
               "src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML'>",
               "</script>",
-              "</head>",
-
-              "<h3> Mathematical model </h3>",
-
-              "<body>",
-              "<h3>",
-              "$$ax^2 + bx + c = 0$$",
-              "</h2>",
-              "</body>"
+              "</head>"
             )
           ),
 
