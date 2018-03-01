@@ -13,9 +13,18 @@
 #' @examples
 #' data <- asa::example_data()
 #' asa::asa(data, solver="lpSolveAPI")
-asa <- function(data, M_prime=0, method="heuristic", niters=10, solver="gurobi", solver_params=list(TimeLimit=600, OutputFlag=0)){
+asa <- function(
+  data, 
+  M_prime=0, 
+  method="exact", 
+  niters=10, 
+  solver="gurobi", 
+  solver_params=list(TimeLimit=600, OutputFlag=0)
+  ){
+  
   if(method=="exact"){
-    results <- asa::exact_model(data, M_prime, solver, solver_params)
+    results <- WildfireResources::exact_model(
+      data, solver=solver, solver_params=solver_params)
   }else if(method=="heuristic"){
     results <- asa::heuristic_model(data, M_prime, niters, solver, solver_params)
   }else{

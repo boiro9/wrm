@@ -88,14 +88,6 @@ asa_dashboard <- function(){
               "Fire",
               tabName = "Fire",
               icon = shiny::icon("fire")
-            ),
-
-            # Law data
-            #-------------------------------------------------------------------
-            menuSubItem(
-              "Law",
-              tabName = "Law",
-              icon = shiny::icon("balance-scale")
             )
           ),
 
@@ -132,7 +124,7 @@ asa_dashboard <- function(){
                 "Heuristic" = "heuristic"
               ),
               inline = T,
-              selected = "heuristic"
+              selected = "exact"
             ),
 
             # Maximum number of iterations
@@ -278,53 +270,20 @@ asa_dashboard <- function(){
           shinydashboard::tabItem(
             tabName = "Fire",
             box(
+              title = shiny::tags$b("Periods information"),
+              status = "primary", solidHeader = TRUE,
+              shiny::numericInput(
+                  "PeriodTime", "Minutes per period", value = 10
+              ),
+              width = "100%"
+            ),
+            box(
               title = shiny::tags$b("Wildfire information"),
               status = "primary", solidHeader = TRUE,
               shiny::fileInput('fire.file', 'Choose the .csv file', accept=c('.csv')),
               shiny::tags$hr(),
               DT::dataTableOutput("fire.table"),
               width = "100%"
-            )
-          ),
-
-          #---------------------------------------------------------------------
-          # Law
-          #---------------------------------------------------------------------
-          shinydashboard::tabItem(
-            tabName = "Law",
-            box(
-              title = shiny::tags$b("Law information"),
-              status = "primary", solidHeader = TRUE,
-              shiny::tags$a(href="https://www.boe.es/buscar/doc.php?id=BOE-A-2010-1275", shiny::tags$b("Spanish Regulation:")),
-              "Information about requirements relating to flight time limitations and activity and rest requirements of aircrew service crews.",
-              shiny::br(),
-              shiny::br(),
-              shiny::column(
-                6,
-                shiny::numericInput(
-                  "PeriodTime", "Minutes per period", value = 10
-                ),
-                shiny::numericInput(
-                  "FBRP_min", "Flight minutes to rest", value = 10
-                ),
-                shiny::numericInput(
-                  "nMax", "Maximum number of aircraft per period", value = 10
-                )
-              ),
-              shiny::column(
-                6,
-                shiny::numericInput(
-                  "DFP_min", "Daily flight minutes", value = 480
-                ),
-                shiny::numericInput(
-                  "FP_min", "Flight minutes without breaks", value = 120
-                ),
-                shiny::numericInput(
-                  "RP_min", "Rest minutes", value = 40
-                )
-              ),
-              width = "100%"
-
             )
           ),
 

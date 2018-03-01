@@ -66,11 +66,6 @@ exact_model <- function(data, M_prime=0, solver="gurobi", solver_params=list(Tim
   M_prime <- max(100*(sum(C)+sum(NVC)),M_prime) # Penalization term
   M <- max(SP)+sum(EF%*%t(PR))                  # Contention term
 
-  l<-c()                                        # number of fly periods when the aircraft start to fly to the wildfire
-  for(i in 1:n){
-    l[i] <- A[i]+floor((A[i]+CFP[i])/FP)*(RP+2*FBRP)+CRP[i]
-  }
-
   #-----------------------------------------------------------------------------
   # Mathematical modelling
   #-----------------------------------------------------------------------------
@@ -247,19 +242,12 @@ exact_model <- function(data, M_prime=0, solver="gurobi", solver_params=list(Tim
 
       #=========================================================================
       # subject to flights {i in I, t in T}:
-      # sum{j in 1..t} S[i,j] - R[i,t] - sum{j in 1..(t-l[i])} S[i,j] <= FL[i,t]
+      # A[i]*W[i, t] <= sum{t1 in 1..t} FL[i, t1]
       #-------------------------------------------------------------------------
+      constr_flights[t+(i-1)*m, var_i("W",c(i, t),n,m)] <- A[i] # A[i]*W[i]
       for(j in 1:t){
-        constr_flights[t+(i-1)*m, var_i("S",c(i,j),n,m)] <- 1  # sum{j in 1..t} S[i,j]
+        constr_flights[t+(i-1)*m, var_i("FL",c(i,t1),n,m)] <- -1  # FL[i,t1]
       }
-      constr_flights[t+(i-1)*m, var_i("R",c(i,t),n,m)] <- -1 # - R[i,t]
-      if(t-l[i]>0){
-        for(j in 1:(t-l[i])){
-          constr_flights[t+(i-1)*m, var_i("S",c(i,j),n,m)] <- -1 +
-            constr_flights[t+(i-1)*m, var_i("S",c(i,j),n,m)] # - sum{j in 1..(t-l[i])} S[i,j]
-        }
-      }
-      constr_flights[t+(i-1)*m, var_i("FL",c(i,t),n,m)] <- -1   # - FL[i,t]
       #=========================================================================
 
       #=========================================================================

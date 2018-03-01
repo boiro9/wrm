@@ -31,7 +31,9 @@ for(i in seq(1,dim(infeasibles)[1])){
 
 results$index = paste("A", results$num_air, "P", results$num_per, sep="")
 
-plot_ly(results, x=~index, y=~time, color=~method, type = "box")
+results <- results[results$method=="Exact",]
+
+plot_ly(results, x=~index, y=~time, color = I("black"), type = "box") %>% layout(xaxis=list(title=""), yaxis=list(title="time (s)"))
 plot_ly(results, x=~index, y=~cost, color=~method, type = "box")
 
 
