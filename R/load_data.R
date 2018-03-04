@@ -1,99 +1,46 @@
-# load_data -------------------------------------------------------------------
+
+#' Load data
+#'
+#' @param input 
+#' @param output 
+#' @param session 
+#'
+#' @import rhandsontable
+#' @return
+#' @export
+#'
+#' @examples
 load_data <- function(input, output, session){
   # Resources
-  data.aero <- shiny::reactive({
-    aero.inFile <- input$aerofile
-    if (is.null(aero.inFile)) {
+  data_resources <- shiny::reactive({
+    if (is.null(input$resources_file)) {
       return(NULL)
     }
-    aero <- read.csv(aero.inFile$datapath,
-                     header = T,
-                     sep = ";",
-                     dec = ",",
-                     stringsAsFactors =FALSE)
-    return(list(aero=aero))
+    resources <- WildfireResources::load_resources_data(
+      input$resources_file$datapath)
+    return(list(resources=resources))
   })
   
-  output$aero.table <- DT::renderDataTable({
-    # require that data() is available
-    if(!is.null(data.aero())){
-      DT::datatable(data.aero()$aero)
-    }
+  output$resources_table <- rhandsontable::renderRHandsontable({
+    rhandsontable(data_resources()[["resources"]], stretchH = "all")
   })
   
   # Fire
-  data.fire <- shiny::reactive({
+  data_fire <- shiny::reactive({
     
-    fire.inFile <- input$fire.file
-    if (is.null(fire.inFile)) {
+    if (is.null(input$fire_file)) {
       return(NULL)
     }
-    fire <- read.csv2(fire.inFile$datapath,
-                      header = T,
-                      sep = ";",
-                      dec = ",",
-                      stringsAsFactors =FALSE)
+    fire <- WildfireResources::load_fire_data(
+      input$fire_file$datapath)
     return(list(fire=fire))
   })
   
-  output$fire.table <- DT::renderDataTable({
-    # require that data() is available
-    if(!is.null(data.fire())){
-      DT::datatable(data.fire()$fire)
-    }
+  output$fire_table <- rhandsontable::renderRHandsontable({
+    rhandsontable(data_fire()[["fire"]], stretchH = "all")
   })
   
-  return(list(data.aero=data.aero, data.fire=data.fire))
+  return(list(resources=data_resources, fire=data_fire))
 }
 # --------------------------------------------------------------------------- #
 
-
-# load_resource_data ----------------------------------------------------------
-load_resource_data  <- function(input, output, session){
-  input$data.aero <- shiny::reactive({
-    aero.inFile <- input$aerofile
-    if (is.null(aero.inFile)) {
-      return(NULL)
-    }
-    aero <- read.csv(aero.inFile$datapath,
-                     header = T,
-                     sep = ";",
-                     dec = ",",
-                     stringsAsFactors =FALSE)
-    return(list(aero=aero))
-  })
-  
-  output$aero.table <- DT::renderDataTable({
-    # require that data() is available
-    if(!is.null(data.aero())){
-      DT::datatable(data.aero()$aero)
-    }
-  })
-}
-# --------------------------------------------------------------------------- #
-
-
-# load_aero_data --------------------------------------------------------------
-load_aero_data  <- function(input, output, session){
-  input$data.fire <- shiny::reactive({
-    
-    fire.inFile <- input$fire.file
-    if (is.null(fire.inFile)) {
-      return(NULL)
-    }
-    fire <- read.csv2(fire.inFile$datapath,
-                      header = T,
-                      sep = ";",
-                      dec = ",",
-                      stringsAsFactors =FALSE)
-    return(list(fire=fire))
-  })
-  
-  output$fire.table <- DT::renderDataTable({
-    # require that data() is available
-    if(!is.null(data.fire())){
-      DT::datatable(data.fire()$fire)
-    }
-  })
-}
-# --------------------------------------------------------------------------- #

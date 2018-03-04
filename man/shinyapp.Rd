@@ -13,5 +13,5 @@ ShinyApp
 Shiny App for the Selection and Allocation problem.
 }
 \examples{
-SaA_shinyApp()
+shinyapp()
 }

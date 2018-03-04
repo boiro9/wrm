@@ -10,11 +10,14 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
 Imports:
-    shiny,
-    shinyjs,
-    plotly,
-    Rsymphony,
-    lpSolveAPI,
-    colorRamps,
-    ggplot2,
-    DT
+  shiny,
+  shinyjs,
+  shinydashboard,
+  plotly,
+  lpSolveAPI,
+  colorRamps,
+  ggplot2,
+  DT
+Suggests:
+  gurobi,
+  Rsymphony

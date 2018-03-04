@@ -1,5 +1,15 @@
 
-# initialization --------------------------------------------------------------
+
+#' Initialization.
+#'
+#' @param input 
+#' @param output 
+#' @param session 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 initialization <- function(input, output, session){
   shiny::observe({
     #--------------------------------------------------------------------------

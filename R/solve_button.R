@@ -1,4 +1,15 @@
-solve_button <- function(input, output, session, data){
+#' Solve button
+#'
+#' @param input 
+#' @param output 
+#' @param session 
+#' @param data 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+solve_button <- function(input, output, session, values){
   #--------------------------------------------------------------------------
   # Initialization
   #--------------------------------------------------------------------------
@@ -9,10 +20,14 @@ solve_button <- function(input, output, session, data){
   
   observe({
     # If no datas can't solve
-    if(is.null(input$fire.file) || is.null(input$aerofile)){
+    print(class(values[["resources"]]()[["resources"]]))
+    print(class(values[["fire"]]()[["fire"]]))
+    if(is.null(values[["resources"]]()) || is.null(values[["fire"]]())){
       shinyjs::disable("solve")
     }else{
-      shinyjs::enable("solve")
+      if(is.list(values[["resources"]]()) & is.list(values[["fire"]]())){
+        shinyjs::enable("solve")
+      }
     }
   })
   
@@ -24,24 +39,25 @@ solve_button <- function(input, output, session, data){
     #-------------------------------------------------------------------------
     # Solve status initialization: solving
     #-------------------------------------------------------------------------
-    shinyjs::hide(id="status_opt")
-    shinyjs::hide(id="status_inf")
+    shinyjs::hide(id = "status_opt")
+    shinyjs::hide(id = "status_inf")
     shinyjs::show(id = "status_load")
     #-------------------------------------------------------------------------
     # get data
     #-------------------------------------------------------------------------
-    problem.info <-get_data(data$data.aero()$aero,
-                            data$data.fire()$fire,
-                            input)
-    
+    print(values[["fire"]]())
+    problem.info <- WildfireResources::get_data(values[["resources"]]()[["resources"]],
+                                                values[["fire"]]()[["fire"]],
+                                                input)
+  
     #-------------------------------------------------------------------------
     # Solve model
     #-------------------------------------------------------------------------
-    results <- asa::asa(problem.info,
-                        M_prime=input$M,
-                        input$method,
-                        niters=input$IterMax,
-                        solver=input$solver)
+    results <- WildfireResources::wildfire_resources(problem.info,
+                                                     M_prime=input$M,
+                                                     input$method,
+                                                     niters=input$IterMax,
+                                                     solver=input$solver)
     
     #-------------------------------------------------------------------------
     # Update solve status
@@ -68,7 +84,7 @@ solve_button <- function(input, output, session, data){
     # Get data
     #------------------------------------------------------------------------
     
-    WRF <- asa::data.scheduling(results)
+    WRF <- WildfireResources::data.scheduling(results)
     
     # Data selection
     #------------------------------------------------------------------------
@@ -90,13 +106,13 @@ solve_button <- function(input, output, session, data){
     # Data output
     #------------------------------------------------------------------------
     output$WRF.data <- DT::renderDataTable({
-      DT::datatable(data.scheduling.selection(WRF, input))
+      DT::datatable(asa::data.scheduling.selection(WRF, input))
     })
     
     # Graph output
     #------------------------------------------------------------------------
     output$WRF.plot <- renderPlotly({
-      asa::plotscheduling(WRF)
+      WildfireResources::plotscheduling(WRF)
     })
     
     
@@ -106,7 +122,7 @@ solve_button <- function(input, output, session, data){
     
     # Get data
     #------------------------------------------------------------------------
-    contention.data <- data.contention(problem.info, results)
+    contention.data <- WildfireResources::data.contention(problem.info, results)
     
     # Data output
     #------------------------------------------------------------------------
@@ -117,7 +133,7 @@ solve_button <- function(input, output, session, data){
     # Graph output
     #------------------------------------------------------------------------
     output$contention.plot <- renderPlotly({
-      asa::plotcontention(contention.data)
+      WildfireResources::plotcontention(contention.data)
     })
     
     
@@ -127,7 +143,7 @@ solve_button <- function(input, output, session, data){
     
     # Get data
     #------------------------------------------------------------------------
-    num.aircraft.data <- asa::data.num.aircraft(results)
+    num.aircraft.data <- WildfireResources::data.num.aircraft(results)
     
     # Data output
     #------------------------------------------------------------------------
@@ -138,28 +154,29 @@ solve_button <- function(input, output, session, data){
     # Graph output
     #------------------------------------------------------------------------
     output$num.aircraft.plot <- renderPlotly({
-      asa::plotnumaircraft(num.aircraft.data)
+      WildfireResources::plotnumaircraft(num.aircraft.data)
     })
     
     
     #========================================================================
-    # Yield
+    # Performance
     #------------------------------------------------------------------------
     
     # Get data
     #------------------------------------------------------------------------
-    yield.data <- data.yield(problem.info, results)
+    performance.data <- WildfireResources::data.performance(problem.info, 
+                                                            results)
     
     # Data output
     #------------------------------------------------------------------------
-    output$yield.data <- DT::renderDataTable({
-      DT::datatable(yield.data)
+    output$performance.data <- DT::renderDataTable({
+      DT::datatable(performance.data)
     })
     
     # Graph output
     #------------------------------------------------------------------------
-    output$yield.plot <- renderPlotly({
-      asa::plotyield(yield.data)
+    output$performance.plot <- renderPlotly({
+      WildfireResources::plotperformance(performance.data)
     })
     
     
@@ -167,28 +184,7 @@ solve_button <- function(input, output, session, data){
     # Report
     #------------------------------------------------------------------------
     
-    output$report <- downloadHandler(
-      # For PDF output, change this to "report.pdf"
-      filename = "report.html",
-      content = function(file) {
-        # Copy the report file to a temporary directory before processing it, in
-        # case we don't have write permissions to the current working dir (which
-        # can happen when deployed).
-        tempReport <- file.path(tempdir(), "report.Rmd")
-        file.copy("report.Rmd", tempReport, overwrite = TRUE)
-        
-        # Set up parameters to pass to Rmd document
-        params <- list(info=problem.info, results=results, input=input)
-        
-        # Knit the document, passing in the `params` list, and eval it in a
-        # child of the global environment (this isolates the code in the document
-        # from the code in this app).
-        rmarkdown::render(tempReport, output_file = file,
-                          params = params,
-                          envir = new.env(parent = globalenv())
-        )
-      }
-    )
+    output$report <- asa::report(problem.info, results, input)
     
     
     #========================================================================

@@ -8,9 +8,7 @@
 #' @export
 #'
 #' @examples
-#' SaA_shinyApp()
+#' shinyapp()
 shinyapp<-function(){
-  if(requireNamespace("shiny", quietly = TRUE)){
-    shiny::shinyApp(asa::asa_dashboard(), asa::asa_server)
-  }
+  shiny::shinyApp(asa::asa_dashboard(), asa::asa_server)
 }

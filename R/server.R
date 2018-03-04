@@ -13,29 +13,21 @@
 #' @examples
 #' asa_server
 asa_server <- function(input, output, session) {
-  if(
-    requireNamespace("plotly", quietly = TRUE) &
-    requireNamespace("shinydashboard", quietly = TRUE) &
-    requireNamespace("shiny", quietly = TRUE) &
-    requireNamespace("shinyjs", quietly = TRUE)
-  ){
-    
-    #==========================================================================
-    # Initialization: Boxes
-    #==========================================================================
-    initialization(input, output, session)
-    
-    #==========================================================================
-    # Load Datas
-    #==========================================================================
-    data <- load_data(input, output, session)
+  # ===========================================================================
+  # Initialization: Boxes
+  # ===========================================================================
+  asa::initialization(input, output, session)
+  
+  # ===========================================================================
+  # Load Datas
+  # ===========================================================================
+  values <- asa::load_data(input, output, session)
+  
+  # ===========================================================================
+  # Solve button
+  # ===========================================================================
+  asa::solve_button(input, output, session, values)
 
-    #==========================================================================
-    # Solve button
-    #==========================================================================
-    solve_button(input, output, session, data)
-
-  }
 }
 
 

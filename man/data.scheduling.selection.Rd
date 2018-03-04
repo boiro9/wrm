@@ -7,7 +7,8 @@
 data.scheduling.selection(WRF, input)
 }
 \arguments{
-\item{WRF}{matrix of 0's 1's 2's and 3's that represent the no-working, working, resting, and flying.}
+\item{WRF}{matrix of 0's 1's 2's and 3's that represent the no-working, 
+working, resting, and flying.}
 
 \item{input}{shiny input.}
 }
