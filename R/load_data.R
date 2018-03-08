@@ -5,7 +5,6 @@
 #' @param output 
 #' @param session 
 #'
-#' @import rhandsontable
 #' @return
 #' @export
 #'
@@ -22,7 +21,8 @@ load_data <- function(input, output, session){
   })
   
   output$resources_table <- rhandsontable::renderRHandsontable({
-    rhandsontable(data_resources()[["resources"]], stretchH = "all")
+    rhandsontable::rhandsontable(data_resources()[["resources"]], 
+                                 stretchH = "all")
   })
   
   # Fire
@@ -37,7 +37,7 @@ load_data <- function(input, output, session){
   })
   
   output$fire_table <- rhandsontable::renderRHandsontable({
-    rhandsontable(data_fire()[["fire"]], stretchH = "all")
+    rhandsontable::rhandsontable(data_fire()[["fire"]], stretchH = "all")
   })
   
   return(list(resources=data_resources, fire=data_fire))

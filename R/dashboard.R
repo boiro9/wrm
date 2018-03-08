@@ -6,15 +6,12 @@
 #'
 #' @return shinydashboard ui.
 #'
-#' @import plotly
-#' @import shinydashboard
-#'
 #' @export
 #'
 #' @examples
 #' SaA_dashboard()
 asa_dashboard <- function(){
-  ui <- dashboardPage(header(), sidebar(), body())
+  ui <- shinydashboard::dashboardPage(header(), sidebar(), body())
   
   return(ui)
 }

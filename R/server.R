@@ -6,8 +6,6 @@
 #'
 #' @return shiny server.
 #'
-#' @import plotly
-#' @import slam
 #' @export
 #' 
 #' @examples
