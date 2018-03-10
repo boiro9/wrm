@@ -9,7 +9,7 @@
 #' @export
 #'
 #' @examples
-solve_button <- function(input, output, session, values){
+solve_button <- function(input, output, session){
   #--------------------------------------------------------------------------
   # Initialization
   #--------------------------------------------------------------------------
@@ -20,12 +20,11 @@ solve_button <- function(input, output, session, values){
   
   observe({
     # If no datas can't solve
-    print(class(values[["resources"]]()[["resources"]]))
-    print(class(values[["fire"]]()[["fire"]]))
-    if(is.null(values[["resources"]]()) || is.null(values[["fire"]]())){
+    if(is.null(input$resources_table) || is.null(input$fire_table)){#is.null(values[["resources"]]()) || is.null(values[["fire"]]())){
       shinyjs::disable("solve")
     }else{
-      if(is.list(values[["resources"]]()) & is.list(values[["fire"]]())){
+      if(any(is.na(rhandsontable::hot_to_r(input$resources_table))) & 
+         any(is.na(rhandsontable::hot_to_r(input$fire_table)))){#is.list(values[["resources"]]()) & is.list(values[["fire"]]())){
         shinyjs::enable("solve")
       }
     }
@@ -42,22 +41,25 @@ solve_button <- function(input, output, session, values){
     shinyjs::hide(id = "status_opt")
     shinyjs::hide(id = "status_inf")
     shinyjs::show(id = "status_load")
+    
     #-------------------------------------------------------------------------
     # get data
     #-------------------------------------------------------------------------
-    print(values[["fire"]]())
-    problem.info <- WildfireResources::get_data(values[["resources"]]()[["resources"]],
-                                                values[["fire"]]()[["fire"]],
-                                                input)
+    print(rhandsontable::hot_to_r(input$fire_table))
+    problem.info <- WildfireResources::get_data(
+      rhandsontable::hot_to_r(input$resources_table),
+      rhandsontable::hot_to_r(input$fire_table),
+      input)
   
     #-------------------------------------------------------------------------
     # Solve model
     #-------------------------------------------------------------------------
-    results <- WildfireResources::wildfire_resources(problem.info,
-                                                     M_prime=input$M,
-                                                     input$method,
-                                                     niters=input$IterMax,
-                                                     solver=input$solver)
+    results <- WildfireResources::wildfire_resources(
+      problem.info,
+      M_prime=input$M,
+      input$method,
+      niters=input$IterMax,
+      solver=input$solver)
     
     #-------------------------------------------------------------------------
     # Update solve status
@@ -190,84 +192,7 @@ solve_button <- function(input, output, session, values){
     #========================================================================
     # Boxes
     #========================================================================
-    
-    #========================================================================
-    # OPTIMAL
-    #------------------------------------------------------------------------
-    if(results$contper!="Unknown"){
-      #----------------------------------------------------------------------
-      # Cost
-      #----------------------------------------------------------------------
-      output$cost <- renderInfoBox({
-        infoBox(
-          "Cost",
-          round(results$cost, digits = 2),
-          icon = icon("euro"),
-          color = "blue",
-          fill = F
-        )
-      })
-      
-      #----------------------------------------------------------------------
-      # Contention Period
-      #----------------------------------------------------------------------
-      output$period <- renderInfoBox({
-        infoBox(
-          "Contention Period",
-          results$contper,
-          icon = icon("fire-extinguisher"),
-          color = "green",
-          fill = F
-        )
-      })
-      
-      #========================================================================
-      # INFEASIBLE
-      #------------------------------------------------------------------------
-    }else{
-      #----------------------------------------------------------------------
-      # Cost
-      #----------------------------------------------------------------------
-      output$cost <- renderInfoBox({
-        infoBox(
-          "Cost",
-          round(results$cost, digits = 2),
-          icon = icon("euro"),
-          color = "red",
-          fill = F
-        )
-      })
-      
-      #----------------------------------------------------------------------
-      # Contention Period
-      #----------------------------------------------------------------------
-      output$period <- renderInfoBox({
-        infoBox(
-          "Contention Period",
-          results$contper,
-          icon = icon("fire-extinguisher"),
-          color = "red",
-          fill = F
-        )
-      })
-    }
-    
-    #========================================================================
-    # ALWAYS
-    #------------------------------------------------------------------------
-    
-    #------------------------------------------------------------------------
-    # Solve Time
-    #------------------------------------------------------------------------
-    output$time <- renderInfoBox({
-      infoBox(
-        "Solve Time (sec)",
-        round(results$time, digits = 2),
-        icon = icon("clock-o"),
-        color = "yellow",
-        fill = F
-      )
-    })
+    box_status(results, results, input, output, session)
     
   })
 }

@@ -17,7 +17,8 @@ Imports:
   lpSolveAPI,
   colorRamps,
   ggplot2,
-  DT
+  DT,
+  import
 Suggests:
   gurobi,
   Rsymphony

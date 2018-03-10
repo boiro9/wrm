@@ -1,7 +1,7 @@
 # sidebar ---------------------------------------------------------------------
 sidebar <- function(){
-  dashboardSidebar(
-    sidebarMenu(
+  shinydashboard::dashboardSidebar(
+    shinydashboard::sidebarMenu(
       # Home
       home(),
       
@@ -45,14 +45,14 @@ datas <- function(){
     "Data", tabName = "datas", icon = shiny::icon("database"),
     
     # Aircraft data
-    menuSubItem(
+    shinydashboard::menuSubItem(
       "Resources",
       tabName = "Aircraft",
       icon = shiny::icon("child")#, class="glyphicon", lib="glyphicon") #family 
     ),
     
     # Fire data
-    menuSubItem(
+    shinydashboard::menuSubItem(
       "Fire",
       tabName = "Fire",
       icon = shiny::icon("fire", lib="glyphicon")
