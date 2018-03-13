@@ -10,5 +10,5 @@
 #' @examples
 #' shinyapp()
 shinyapp<-function(){
-  shiny::shinyApp(asa::asa_dashboard(), asa::asa_server)
+  shiny::shinyApp(wrm::wrm_dashboard(), wrm::wrm_server)
 }

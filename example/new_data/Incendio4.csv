@@ -1,5 +1,4 @@
-Period;PER;NVC;EF;;;;;;;;;nMin;nMax
-;;;BellB412_1;BellB412_2;BellB212_1;BellB212_2;Ka32_1;Ka32_2;BellB407_1;BellB407_2;BellB407_3;Aircrafts;Aircrafts
+Period;PER;NVC;EF.BellB412_1;EF.BellB412_2;EF.BellB212_1;EF.BellB212_2;EF.Ka32_1;EF.Ka32_2;EF.BellB407_1;EF.BellB407_2;EF.BellB407_3;nMin.Aircrafts;nMax.Aircrafts
 1;1,2;70;1;1;1;1;1;1;1;1;1;1;6
 2;0,2;140;1;1;1;1;1;1;1;1;1;1;6
 3;0,2;200;1;1;1;1;1;1;1;1;1;1;6

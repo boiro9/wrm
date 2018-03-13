@@ -1,10 +1,10 @@
-Package: asa
+Package: wrm
 Type: Package
-Title: Aircraft Selection and Allocation
+Title: Wildfire Resources Management
 Version: 1.0.0
 Author: Jorge Rodriguez-Veiga, Maria Jose Ginzo-Villamayor, Balbina Casas-Mendez
 Maintainer: Jorge Rodriguez-Veiga <jorge.rodriguez.veiga@gmail.com>
-Description: Determine optimal planning that includes the number and type of resources needed to extinguishing a forest fire is a difficult task In this app, a general integer programming model is programed which also includes the allocation of resources to different periods of time in a day embedded in extinguishing a fire, with the goal of meeting the Spanish regulations regarding non-neglect of fronts and periods of rest of the pilots. We consider two types to get a solution, the exact method and also an heuristic algorithm designed specifically for this problem which allows to obtain a quality solution quickly in real problems. Alse we built a Shiny app to solve the problems.
+Description: Determine optimal planning that includes the number and type of resources needed to extinguishing a forest fire is a difficult task In this app, a general integer programming model is programed which also includes the allocation of resources to different periods of time in a day embedded in extinguishing a fire, with the goal of meeting the Spanish regulations regarding non-neglect of fronts and periods of rest of the pilots. We consider two types to get a solution, the exact method and also an heuristic algorithm designed specifically for this problem which allows to obtain a quality solution quickly in real problems.
 License: GPL-2
 Encoding: UTF-8
 LazyData: true
@@ -17,7 +17,18 @@ Imports:
   lpSolveAPI,
   colorRamps,
   ggplot2,
-  DT
+  DT,
+  rmarkdown,
+  rhandsontable,
+  WildfireResources,
+  import,
+  formattable
+Remotes:
+  github::jorgerodriguezveiga/WildfireResources
 Suggests:
   gurobi,
-  Rsymphony
+  Rsymphony,
+  testthat,
+  devtools,
+  knitr
+URL: https://github.com/mjginzo/SAA/
