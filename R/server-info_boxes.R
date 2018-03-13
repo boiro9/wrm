@@ -60,11 +60,11 @@ box_status <- function(results, input, output, session){
 box_opt <- function(results, input, output, session){
   # Cost
   # ----
-  output$cost <- renderInfoBox({
-    infoBox(
+  output$cost <- shinydashboard::renderInfoBox({
+    shinydashboard::infoBox(
       "Cost",
       round(results$cost, digits = 2),
-      icon = icon("euro"),
+      icon = shiny::icon("euro"),
       color = "blue",
       fill = F
     )
@@ -72,11 +72,11 @@ box_opt <- function(results, input, output, session){
   
   # Contention Period
   # -----------------
-  output$period <- renderInfoBox({
-    infoBox(
+  output$period <- shinydashboard::renderInfoBox({
+    shinydashboard::infoBox(
       "Contention Period",
       results$contper,
-      icon = icon("fire-extinguisher"),
+      icon = shiny::icon("fire-extinguisher"),
       color = "green",
       fill = F
     )
@@ -84,11 +84,11 @@ box_opt <- function(results, input, output, session){
   
   # Solve Time
   # ----------
-  output$time <- renderInfoBox({
-    infoBox(
+  output$time <- shinydashboard::renderInfoBox({
+    shinydashboard::infoBox(
       "Solve Time (sec)",
       round(results$time, digits = 2),
-      icon = icon("clock-o"),
+      icon = shiny::icon("clock-o"),
       color = "yellow",
       fill = F
     )
@@ -101,11 +101,11 @@ box_opt <- function(results, input, output, session){
 box_inf <- function(results, input, output, session){
   # Cost
   # ----
-  output$cost <- renderInfoBox({
-    infoBox(
+  output$cost <- shinydashboard::renderInfoBox({
+    shinydashboard::infoBox(
       "Cost",
       round(results$cost, digits = 2),
-      icon = icon("euro"),
+      icon = shiny::icon("euro"),
       color = "red",
       fill = F
     )
@@ -113,11 +113,11 @@ box_inf <- function(results, input, output, session){
   
   # Contention Period
   # -----------------
-  output$period <- renderInfoBox({
-    infoBox(
+  output$period <- shinydashboard::renderInfoBox({
+    shinydashboard::infoBox(
       "Contention Period",
       results$contper,
-      icon = icon("fire-extinguisher"),
+      icon = shiny::icon("fire-extinguisher"),
       color = "red",
       fill = F
     )
@@ -125,11 +125,11 @@ box_inf <- function(results, input, output, session){
   
   # Solve Time
   # ----------
-  output$time <- renderInfoBox({
-    infoBox(
+  output$time <- shinydashboard::renderInfoBox({
+    shinydashboard::infoBox(
       "Solve Time (sec)",
       round(results$time, digits = 2),
-      icon = icon("clock-o"),
+      icon = shiny::icon("clock-o"),
       color = "yellow",
       fill = F
     )

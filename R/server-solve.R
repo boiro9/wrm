@@ -23,8 +23,10 @@ solve_button <- function(input, output, session){
     if(is.null(input$resources_table) || is.null(input$fire_table)){#is.null(values[["resources"]]()) || is.null(values[["fire"]]())){
       shinyjs::disable("solve")
     }else{
-      if(any(is.na(rhandsontable::hot_to_r(input$resources_table))) & 
+      if(any(is.na(rhandsontable::hot_to_r(input$resources_table))) | 
          any(is.na(rhandsontable::hot_to_r(input$fire_table)))){#is.list(values[["resources"]]()) & is.list(values[["fire"]]())){
+        shinyjs::disable("solve")
+      }else{
         shinyjs::enable("solve")
       }
     }
@@ -45,20 +47,16 @@ solve_button <- function(input, output, session){
     #-------------------------------------------------------------------------
     # get data
     #-------------------------------------------------------------------------
-    print(rhandsontable::hot_to_r(input$fire_table))
     problem.info <- WildfireResources::get_data(
       rhandsontable::hot_to_r(input$resources_table),
       rhandsontable::hot_to_r(input$fire_table),
-      input)
+      input$PeriodTime)
   
     #-------------------------------------------------------------------------
     # Solve model
     #-------------------------------------------------------------------------
     results <- WildfireResources::wildfire_resources(
       problem.info,
-      M_prime=input$M,
-      input$method,
-      niters=input$IterMax,
       solver=input$solver)
     
     #-------------------------------------------------------------------------
@@ -92,7 +90,7 @@ solve_button <- function(input, output, session){
     #------------------------------------------------------------------------
     updateCheckboxGroupInput(session,
                              "WRF.rows",
-                             label = "Selected aircraft:",
+                             label = "Selected resources:",
                              choices = row.names(WRF),
                              selected = row.names(WRF)
     )
@@ -108,13 +106,15 @@ solve_button <- function(input, output, session){
     # Data output
     #------------------------------------------------------------------------
     output$WRF.data <- DT::renderDataTable({
-      DT::datatable(asa::data.scheduling.selection(WRF, input))
+      DT::datatable(wrm::data.scheduling.selection(WRF, input))
     })
     
     # Graph output
     #------------------------------------------------------------------------
-    output$WRF.plot <- renderPlotly({
-      WildfireResources::plotscheduling(WRF)
+    output$WRF.plot <- plotly::renderPlotly({
+      p <- WildfireResources::plotscheduling(WRF)
+      p$elementId <- NULL
+      p
     })
     
     
@@ -134,29 +134,33 @@ solve_button <- function(input, output, session){
     
     # Graph output
     #------------------------------------------------------------------------
-    output$contention.plot <- renderPlotly({
-      WildfireResources::plotcontention(contention.data)
+    output$contention.plot <- plotly::renderPlotly({
+      p <- WildfireResources::plotcontention(contention.data)
+      p$elementId <- NULL
+      p
     })
     
     
     #========================================================================
-    # Number of Aircraft
+    # Number of Resources
     #------------------------------------------------------------------------
     
     # Get data
     #------------------------------------------------------------------------
-    num.aircraft.data <- WildfireResources::data.num.aircraft(results)
+    num.resources.data <- WildfireResources::data_num_resources(results)
     
     # Data output
     #------------------------------------------------------------------------
-    output$num.aircraft.data <- DT::renderDataTable({
-      DT::datatable(num.aircraft.data)
+    output$num.resources.data <- DT::renderDataTable({
+      DT::datatable(num.resources.data)
     })
     
     # Graph output
     #------------------------------------------------------------------------
-    output$num.aircraft.plot <- renderPlotly({
-      WildfireResources::plotnumaircraft(num.aircraft.data)
+    output$num.resources.plot <- plotly::renderPlotly({
+      p <- WildfireResources::plot_num_resources(num.resources.data)
+      p$elementId <- NULL
+      p
     })
     
     
@@ -177,8 +181,10 @@ solve_button <- function(input, output, session){
     
     # Graph output
     #------------------------------------------------------------------------
-    output$performance.plot <- renderPlotly({
-      WildfireResources::plotperformance(performance.data)
+    output$performance.plot <- plotly::renderPlotly({
+      p <- WildfireResources::plotperformance(performance.data)
+      p$elementId <- NULL
+      p
     })
     
     
@@ -186,13 +192,13 @@ solve_button <- function(input, output, session){
     # Report
     #------------------------------------------------------------------------
     
-    output$report <- asa::report(problem.info, results, input)
+    output$report <- wrm::report(problem.info, results, input)
     
     
     #========================================================================
     # Boxes
     #========================================================================
-    box_status(results, results, input, output, session)
+    box_status(results, input, output, session)
     
   })
 }

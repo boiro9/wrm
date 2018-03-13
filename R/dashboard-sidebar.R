@@ -44,10 +44,10 @@ datas <- function(){
   shinydashboard::menuItem(
     "Data", tabName = "datas", icon = shiny::icon("database"),
     
-    # Aircraft data
+    # Resources data
     shinydashboard::menuSubItem(
       "Resources",
-      tabName = "Aircraft",
+      tabName = "Resources",
       icon = shiny::icon("child")#, class="glyphicon", lib="glyphicon") #family 
     ),
     
@@ -68,12 +68,6 @@ solver_options <- function(){
   shinydashboard::menuItem(
     "Options", tabName = "options", icon = shiny::icon("gear"),
     
-    # Penalty
-    # -------
-    shiny::sliderInput(
-      "M", "Penalty", 1000, 1000000, 1000
-    ),
-    
     # Solver
     # ------
     shiny:: radioButtons(
@@ -82,28 +76,6 @@ solver_options <- function(){
         "gurobi" = "gurobi",
         "lpSolve" = "lpSolve",
         "Rsymphony" = "Rsymphony"
-      ),
-      inline = T
-    ),
-    
-    # Method
-    #-------
-    shiny:: radioButtons(
-      "method", "Method",
-      c(
-        "Exact" = "exact",
-        "Heuristic" = "heuristic"
-      ),
-      inline = T,
-      selected = "exact"
-    ),
-    
-    # Maximum number of iterations
-    #-----------------------------
-    shiny::conditionalPanel(
-      condition = "input.method == 'heuristic'",
-      shiny::numericInput(
-        "IterMax", "Maximum number of iterations", 10
       )
     )
   )

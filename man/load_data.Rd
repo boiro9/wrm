@@ -16,3 +16,6 @@ load_data(input, output, session)
 \description{
 Load data
 }
+\note{
+http://jrowen.github.io/rhandsontable
+}

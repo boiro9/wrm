@@ -14,7 +14,7 @@ blankplot <- function(){
 #' data.scheduling.selection
 #'
 #' @param WRF matrix of 0's 1's 2's and 3's that represent the no-working, 
-#' working, resting, and flying.
+#' working, traveling, and flying.
 #' @param input shiny input.
 #'
 #' @return data

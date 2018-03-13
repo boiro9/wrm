@@ -1,2 +1,0 @@
-+ nMax = 4 test 7:
-    + Función objetivo del heurístico menor que la del algoritmo exacto.

@@ -9,22 +9,22 @@
 #' @export
 #' 
 #' @examples
-#' asa_server
-asa_server <- function(input, output, session) {
+#' wrm_server
+wrm_server <- function(input, output, session) {
   # ===========================================================================
   # Initialization: Boxes
   # ===========================================================================
-  asa::box_init(input, output, session)
+  wrm::box_init(input, output, session)
   
   # ===========================================================================
   # Load Datas
   # ===========================================================================
-  asa::load_data(input, output, session)
+  wrm::load_data(input, output, session)
   
   # ===========================================================================
   # Solve button
   # ===========================================================================
-  asa::solve_button(input, output, session)
+  wrm::solve_button(input, output, session)
 
 }
 

@@ -9,6 +9,7 @@
 #' @export
 #'
 #' @examples
+#' @note http://jrowen.github.io/rhandsontable
 load_data <- function(input, output, session){
   # Resources
   load_resources(input, output, session)
@@ -21,24 +22,26 @@ load_data <- function(input, output, session){
 
 # load_resources --------------------------------------------------------------
 load_resources <- function(input, output, session){
+  import::from(rhandsontable, "%>%")
   data_resources <- shiny::reactive({
     if(is.null(input$resources_table)){
       resources <- data.frame(
         Name = c(""),
-        C = as.numeric(NA),
-        P = as.numeric(NA),
-        A = as.numeric(NA),
-        CFP = as.numeric(NA),
-        CRP = as.numeric(NA),
-        CTFP = as.numeric(NA),
-        BPR = as.numeric(NA),
-        FBRP = as.numeric(NA),
-        FP = as.numeric(NA),
-        RP = as.numeric(NA),
-        DFP = as.numeric(NA),
+        G = c(""),
         ITW = as.logical(NA),
         IOW = as.logical(NA),
-        G = c("")
+        A = as.numeric(NA),
+        CWP = as.numeric(NA),
+        CRP = as.numeric(NA),
+        CUP = as.numeric(NA),
+        BPR = as.numeric(NA),
+        P = as.numeric(NA),
+        C = as.numeric(NA),
+        TRP = as.numeric(NA),
+        WP = as.numeric(NA),
+        RP = as.numeric(NA),
+        UP = as.numeric(NA),
+        stringsAsFactors = FALSE
       )
     }else{
       resources <- rhandsontable::hot_to_r(input$resources_table)
@@ -65,7 +68,10 @@ load_resources <- function(input, output, session){
     }else{
       resources <- data_resources()[["resources"]]
     }
-    rhandsontable::rhandsontable(resources)
+    
+    rhandsontable::rhandsontable(
+      resources, stretchH = "all") %>%
+       rhandsontable::hot_cols(columnSorting = TRUE)
   })
 }
 # --------------------------------------------------------------------------- #
@@ -79,7 +85,8 @@ load_fire <- function(input, output, session){
       fire <- data.frame(
         Period = as.numeric(1),
         PER = as.numeric(NA),
-        NVC = as.numeric(NA))
+        NVC = as.numeric(NA),
+        stringsAsFactors = FALSE)
     }else{
       fire <- rhandsontable::hot_to_r(input$fire_table)
     }
@@ -105,7 +112,7 @@ load_fire <- function(input, output, session){
       fire <- data_fire()[["fire"]]
     }
     fire <- check_fire_columns(input, fire)
-    rhandsontable::rhandsontable(fire)
+    rhandsontable::rhandsontable(fire, stretchH = "all")
   })
 }
 # --------------------------------------------------------------------------- #

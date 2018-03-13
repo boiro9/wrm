@@ -30,16 +30,16 @@ results_body <- function(){
           "Data",
           shiny::fluidRow(
             
-            # Aircraft selection
+            # Resources selection
             shiny::column(
               6,
               shiny::checkboxGroupInput(
-                "WRF.rows", "Selected aircraft:",
+                "WRF.rows", "Selected resources:",
                 c()
               )
             ),
             
-            # Perio Selection
+            # Period Selection
             shiny::column(
               6,
               shiny::sliderInput(
@@ -86,18 +86,18 @@ results_body <- function(){
         )
       ),
       
-      # Number of Aircraft
+      # Number of Resources
       # ==================
       shinydashboard::tabBox(
         width = 12,
-        title =  shiny::h3("Number of Aircraft"),
-        id = "num.aircraft",
+        title =  shiny::h3("Number of Resources"),
+        id = "num.resources",
         
         # Plot
         # ----
         shiny::tabPanel(
           "Plot",
-          plotly::plotlyOutput("num.aircraft.plot", height = 300)
+          plotly::plotlyOutput("num.resources.plot", height = 300)
         ),
         
         # Data
@@ -106,7 +106,7 @@ results_body <- function(){
           "Data",
           shiny::fluidRow(
             shiny::column(width = 1), # to center
-            shiny::column(width=10, DT::dataTableOutput("num.aircraft.data")),
+            shiny::column(width=10, DT::dataTableOutput("num.resources.data")),
             shiny::column(width = 1)  # to center
           )
         )
