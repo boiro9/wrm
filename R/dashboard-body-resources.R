@@ -30,7 +30,7 @@ resources_body <- function(){
       "Maximum resource performance, i.e. kilometres cointained in a hour (km/h).",
       "Fix cost for use resource (€).",
       "Cost per hour for use the resource (€/h).",
-      "Time that the resource needs to go to the resting point from the fire, and vice versa.",
+      "Time that the resource needs to go to the resting point from the fire, and vice versa (min).",
       "Maximum time working without breaks (min).",
       "Necessary time of rest (min).",
       "Maximum daily time working (including rests, ...) (min)."
