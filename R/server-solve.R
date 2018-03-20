@@ -68,7 +68,7 @@ solve_button <- function(input, output, session){
       shinyjs::show(id = "status_opt")
       shinyjs::enable("report")
       
-      results$contper <- max(which(results$Y==1))+1
+      results$contper <- max(which(results$Y==1), 0)+1
     }else{
       results$nd_model$time <- results$st_model$time + results$nd_model$time
       results <- results$nd_model
