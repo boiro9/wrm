@@ -147,7 +147,8 @@ solve_button <- function(input, output, session){
     
     # Get data
     #------------------------------------------------------------------------
-    num.resources.data <- WildfireResources::data_num_resources(results)
+    num.resources.data <- WildfireResources::data_num_resources(problem.info,
+                                                                results)
     
     # Data output
     #------------------------------------------------------------------------
