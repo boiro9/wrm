@@ -1,4 +1,4 @@
-Period;PER;NVC;EF.heli1;EF.heli2;EF.avi1;EF.avi2;EF.maqui1;EF.maqui2;EF.maqui3;EF.maqui4;EF.7bri1;EF.7bri2;EF.12bri3;EF.12bri4;EF.12bri5;nMin.aerial;nMax.aerial;nMin.maqui;nMax.maqui;nMin.bri;nMax.bri
+Period;PER;NVC;EF.helicopter1;EF.helicopter2;EF.aeroplane1;EF.aeroplane2;EF.machine1;EF.machine2;EF.machine3;EF.machine4;EF.7brigade1;EF.7brigade2;EF.12brigade1;EF.12brigade2;EF.12brigade3;nMin.aircraft;nMax.aircraft;nMin.machine;nMax.machine;nMin.brigade;nMax.brigade
 1;10,2;70;1;1;1;1;1;1;1;1;1;1;1;1;1;2;3;1;4;2;5
 2;0,2;140;1;1;1;1;1;1;1;1;1;1;1;1;1;2;3;1;4;2;5
 3;0,2;200;1;1;1;1;1;1;1;1;1;1;1;1;1;2;3;1;4;2;5
