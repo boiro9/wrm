@@ -1,3 +1,9 @@
+# Wildfire Resources Management.
+
+Determine optimal planning that includes the number and type of resources needed to extinguishing a forest fire is a difficult task In this app, a general integer programming model is programed which also includes the allocation of resources to different periods of time in a day embedded in extinguishing a fire, with the goal of meeting the Spanish regulations regarding non-neglect of fronts and periods of rest of the resources.
+
+## Installation
+
 We recommend the installation of the **wrm** package from the hubgit repository. So, first of all, install de **devtools** R package:
 
 ```
